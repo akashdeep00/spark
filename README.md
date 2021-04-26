@@ -11,3 +11,11 @@ $ cd outfile
 $ ls 
 Part-00000 part-00001 _SUCCESS
 
+
+
+
+By setting "inferSchema" and "header" to true, we can let spark know that first row in data in header 
+ Infer schema will automatically guess the data types for each field.
+ 
+ 
+ 
