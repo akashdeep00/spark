@@ -1,0 +1,51 @@
+
+                   SPARK SQL
+
+import org.apache.spark.sql.Row      //import sql package
+
+import org.apache.spark.sql.types._
+
+val a=sc.parallelize(Array(Row(1,"abc",99),Row(2,"xyz",85),Row(3,"pqr",34)))   //insert the data
+
+a.collect                                                                                  //action to view data
+			Array[org.apache.spark.sql.Row] = Array([1,abc,99], [2,xyz,85], [3,pqr,34])
+
+val s=StructType(                                      //structure for data
+     | Array(
+     | StructField("id",IntegerType,true),
+     | StructField("name",StringType,true),
+     | StructField("marks",IntegerType,true)
+     | )
+     | )
+
+val dataframe=spark.createDataFrame(a,s)        //create dataframe using data and structure
+ 
+dataframe.printSchema                
+root
+ |-- id: integer (nullable = true)
+ |-- name: string (nullable = true)
+ |-- marks: integer (nullable = true)
+
+
+dataframe.show              //view table
++---+----+-----+
+| id|name|marks|
++---+----+-----+
+|  1| abc|   99|
+|  2| xyz|   85|
+|  3| pqr|   34|
++---+----+-----+
+
+dataframe.createOrReplaceTempView("aview")      //create a temporary view for sql operations
+
+spark.sql("select * from aview").show        //sql operation
++---+----+-----+
+| id|name|marks|
++---+----+-----+
+|  1| abc|   99|
+|  2| xyz|   85|
+|  3| pqr|   34|
++---+----+-----+
+
+
+

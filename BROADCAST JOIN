@@ -1,0 +1,58 @@
+BROADCAST JOIN
+
+Spark broadcast joins are perfect for joining a large DataFrame with a small DataFrame.			
+Spark splits up data on different nodes in a cluster so multiple computers can process data in parallel. Traditional joins are hard with Spark because the data is split.
+
+Broadcast joins are easier to run on a cluster. Spark can “broadcast” a small DataFrame by sending all the data in that small DataFrame to all nodes in the cluster. After the small DataFrame is broadcasted, Spark can perform a join without shuffling any of the data in the large DataFrame.
+
+
+val peopleDF = Seq(
+  ("ABC", "jaipur"),
+  ("XYZ", "patna"),
+  ("PQR", "jaipur")
+).toDF("first_name", "city")	
+
+
+peopleDF.show()
+
++----------+---------+
+|first_name|     city|
++----------+---------+
+|    ABC   | jaipur  |
+|    XYZ   | patna   |
+|    PQR   | jaipur  |
++----------+---------+
+
+
+
+
+val citiesDF = Seq(
+  ("jaipur", "India", 2.5),
+  ("patna", "India", 12.3)
+).toDF("city", "country", "population")
+
+
+citiesDF.show()
+
++---------+--------+----------+
+|     city| country|population|
++---------+--------+----------+
+| jaipur  |	  india|       2.5|
+| patna	  |   india|      12.3|
++---------+--------+----------+
+
+peopleDF.join(
+  broadcast(citiesDF),
+  peopleDF("city") <=> citiesDF("city")
+).show()
+
+
++----------+---------+---------+--------+----------+
+|first_name|     city|     city| country|population|
++----------+---------+---------+--------+----------+
+|    ABC   |  jaipur | jaipur  |   india|       2.5|
+|    XYZ   |  patna  | patna   |   india|      12.3|
+|    PQR   |  jaipur | jaipur  |   india|       2.5|
++----------+---------+---------+--------+----------+
+
+

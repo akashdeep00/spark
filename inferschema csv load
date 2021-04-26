@@ -1,0 +1,34 @@
+
+				READ CSV FILES
+
+
+Reading CSV files in Spark using inferschema
+
+	
+val df = spark.read.csv("data.csv")
+
+df.show(2)
+
+
+spark cannot read columns properly from csv file. 
+
+
+
+val df1 = spark.read.format("csv")
+          .option("inferSchema", "true")
+          .option("header","true")
+          .load("data.csv")
+
+
+
+df1.show(2)
+
+
+
+By setting "inferSchema" and "header" to true, we can let spark know that first row in data in header 
+ Infer schema will automatically guess the data types for each field.
+
+
+
+
+				
